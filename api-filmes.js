@@ -2,7 +2,9 @@ import express from "express";
 import fs from "fs/promises";
 
 const app = express();
-const port = 3000;
+
+// Railway define a porta automaticamente → usa process.env.PORT
+const PORT = process.env.PORT || 3000;
 
 // Carrega filmes do arquivo JSON
 let filmes = [];
@@ -39,7 +41,7 @@ app.get("/filmes/letra/:letra", (req, res) => {
   res.json(filtrados);
 });
 
-// Inicia servidor
-app.listen(port, () => {
-  console.log(`API de filmes rodando em http://localhost:${port}`);
+// Inicia servidor (0.0.0.0 para permitir acesso externo)
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`API de filmes rodando na porta ${PORT}`);
 });
