@@ -59,15 +59,21 @@ app.get("/filmes/letra/:letra", (req, res) => {
   res.json(filtrados);
 });
 
-//Buscar filmes pelo título (contendo palavra)
+// Rota de busca por título (flexível)
 app.get("/filmes/busca", (req, res) => {
   const { titulo } = req.query;
-  if (!titulo) {
-    return res.status(400).json({ erro: "Informe o parâmetro 'titulo'" });
-  }
-  const filtrados = filmes.filter(f => f.titulo.toLowerCase().includes(titulo.toLowerCase()));
-  res.json(filtrados);
+
+  if (!titulo) return res.status(400).json({ erro: "Informe o parâmetro 'titulo'" });
+
+  const termo = titulo.trim().toLowerCase();
+
+  const resultados = filmes.filter(f => f.titulo.toLowerCase().includes(termo));
+
+  if (resultados.length === 0) return res.status(404).json({ erro: "Filme não encontrado" });
+
+  res.json(resultados);
 });
+
 
 //Inicia servidor
 app.listen(PORT, "0.0.0.0", () => {
