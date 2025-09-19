@@ -1,16 +1,27 @@
 import express from "express";
 import fs from "fs/promises";
+import path from "path";
 
 const app = express();
 
-// Railway define a porta automaticamente → usa process.env.PORT
+// Porta fornecida pelo Railway
 const PORT = process.env.PORT || 3000;
 
-// Carrega filmes do arquivo JSON
+// Caminho absoluto para filmes.json (para garantir que funcione no Railway)
+const filmesPath = path.resolve("./filmes.json");
+
 let filmes = [];
-fs.readFile("filmes.json", "utf-8")
-  .then(data => filmes = JSON.parse(data))
+fs.readFile(filmesPath, "utf-8")
+  .then(data => {
+    filmes = JSON.parse(data);
+    console.log(`Filmes carregados: ${filmes.length}`);
+  })
   .catch(err => console.error("Erro ao ler filmes.json:", err));
+
+// Rota inicial para evitar Not Found
+app.get("/", (req, res) => {
+  res.send("Bem-vindo à API de Filmes! Use /filmes para acessar os dados.");
+});
 
 // Rota para todos os filmes ou filtrando por gênero
 app.get("/filmes", (req, res) => {
@@ -41,7 +52,8 @@ app.get("/filmes/letra/:letra", (req, res) => {
   res.json(filtrados);
 });
 
-// Inicia servidor (0.0.0.0 para permitir acesso externo)
+// Inicia servidor
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API de filmes rodando na porta ${PORT}`);
 });
+
