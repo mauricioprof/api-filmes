@@ -1,13 +1,18 @@
 import express from "express";
 import fs from "fs/promises";
 import path from "path";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Caminho absoluto para filmes.json
+// Habilita CORS para todas as origens (didático para testes/ensino)
+app.use(cors());
+
+// Caminho absoluto para o arquivo filmes.json
 const filmesPath = path.resolve("./filmes.json");
 
+// Carrega filmes do JSON
 let filmes = [];
 fs.readFile(filmesPath, "utf-8")
   .then(data => {
@@ -18,31 +23,39 @@ fs.readFile(filmesPath, "utf-8")
 
 // Rota inicial
 app.get("/", (req, res) => {
-  res.send("API cinema - Use: /filmes para acessar dados.");
+  res.send("Bem-vindo à API de Filmes! Use /filmes para acessar os dados.");
 });
 
-app.get("/sobre", (req, res) => {
-  res.send("API cinema - by Prof. Mauricio Santos©");
-});
-
-
-// Rota para todos os filmes
+// Rota para todos os filmes ou filtrando por gênero
 app.get("/filmes", (req, res) => {
-  res.json(filmes);
+  const { genero } = req.query;
+  if (genero) {
+    const filtrados = filmes.filter(
+      f => f.genero.toLowerCase() === genero.toLowerCase()
+    );
+    res.json(filtrados);
+  } else {
+    res.json(filmes);
+  }
 });
 
-// Rota por ID
+// Rota para filme específico por ID
 app.get("/filmes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const filme = filmes.find(f => f.id === id);
-  if (filme) res.json(filme);
-  else res.status(404).json({ erro: "Filme não encontrado" });
+  if (filme) {
+    res.json(filme);
+  } else {
+    res.status(404).json({ erro: "Filme não encontrado" });
+  }
 });
 
-// Rota por letra inicial
+// Rota para buscar filmes por letra inicial do título
 app.get("/filmes/letra/:letra", (req, res) => {
   const letra = req.params.letra.toUpperCase();
-  const filtrados = filmes.filter(f => f.titulo.toUpperCase().startsWith(letra));
+  const filtrados = filmes.filter(f =>
+    f.titulo.toUpperCase().startsWith(letra)
+  );
   res.json(filtrados);
 });
 
