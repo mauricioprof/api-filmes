@@ -18,8 +18,13 @@ fs.readFile(filmesPath, "utf-8")
 
 // Rota inicial
 app.get("/", (req, res) => {
-  res.send("Bem-vindo à API de Filmes! Use /filmes para acessar os dados.");
+  res.send("API cinema - Use: /filmes para acessar dados.");
 });
+
+app.get("/sobre", (req, res) => {
+  res.send("API cinema - by Prof. Mauricio Santos©");
+});
+
 
 // Rota para todos os filmes
 app.get("/filmes", (req, res) => {
