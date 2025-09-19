@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Catálogo de Filmes</title>
+  <style>
+    /* Importando fonte moderna */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: #1e88e5;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .titulo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #1e88e5;
+      margin-bottom: 10px;
+    }
+
+    .genero, .ano {
+      font-size: 0.9rem;
+      color: #555;
+      margin: 4px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+      background: #1e88e5;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Catálogo de Filmes</h1>
+  </header>
+
+  <main id="lista"></main>
+
+  <footer>
+    &copy; 2025 - API de Filmes | Maurício Prof
+  </footer>
+
+  <script>
+    async function listarFilmes() {
+      let resposta = await fetch("https://api-filmes-production-9408.up.railway.app/filmes");
+      let filmes = await resposta.json();
+      let lista = document.getElementById("lista");
+      filmes.forEach(filme => {
+        let card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="titulo">${filme.titulo}</div>
+          <div class="ano">Ano: ${filme.ano}</div>
+          <div class="genero">Gênero: ${filme.genero}</div>
+        `;
+        lista.appendChild(card);
+      });
+    }
+    listarFilmes();
+  </script>
+</body> 
+</html>

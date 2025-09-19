@@ -1,17 +1,18 @@
 {
   "name": "apifilmes",
   "version": "1.0.0",
-  "description": "",
+  "description": "API de filmes para estudos",
   "main": "api-filmes.js",
   "type": "module",
   "scripts": {
-    "start": "node api-filmes.js"
+    "start": "node api-filmes.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mauricio",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
   }
 }

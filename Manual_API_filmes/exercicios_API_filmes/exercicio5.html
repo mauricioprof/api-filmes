@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Filmes em Cards - Flexbox</title>
+<link rel="stylesheet" href="exercicio5.css">
+</head>
+<body>
+
+<header>
+  <h1>Catálogo de Filmes</h1>
+</header>
+
+<div class="filtro">
+  <label for="ano">Filtrar por Ano:</label>
+  <input type="number" id="ano" placeholder="ex: 2020">
+  <button onclick="filtrarAno()">Filtrar</button>
+</div>
+
+<main id="grid"></main>
+
+<footer>
+  &copy; 2025 - API de Filmes | Prof. Mauricio Santos
+</footer>
+
+<script>
+  let filmes = [];
+
+  async function listarCards() {
+    try {
+      let resposta = await fetch("https://api-filmes-production-9408.up.railway.app/filmes");
+      filmes = await resposta.json();
+      renderizarFilmes(filmes);
+    } catch (erro) {
+      console.error("Erro ao carregar filmes:", erro);
+    }
+  }
+
+  function renderizarFilmes(lista) {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = ""; // limpa grid
+    if (lista.length === 0) {
+      grid.innerHTML = "<p>Nenhum filme encontrado para este ano.</p>";
+      return;
+    }
+    lista.forEach(filme => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="titulo">${filme.titulo}</div>
+        <div class="ano">Ano: ${filme.ano}</div>
+        <div class="genero">Gênero: ${filme.genero}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filtrarAno() {
+    const anoInput = document.getElementById("ano").value;
+    const filtrados = filmes.filter(f => f.ano == anoInput);
+    renderizarFilmes(filtrados);
+  }
+
+  listarCards();
+</script>
+
+</body>
+</html>

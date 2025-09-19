@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Filmes</title>
+</head>
+<body>
+  <h1>Filmes</h1>
+  <ul id="lista"></ul>
+
+  <script>
+    async function listarFilmes() {
+      let resposta = await fetch("https://api-filmes-production-9408.up.railway.app/filmes");
+      let filmes = await resposta.json();
+      let lista = document.getElementById("lista");
+      filmes.forEach(filme => {
+        let item = document.createElement("li");
+        item.textContent = filme.titulo;
+        lista.appendChild(item);
+      });
+    }
+    listarFilmes();
+  </script>
+</body>
+</html>
