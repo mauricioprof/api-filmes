@@ -3,11 +3,9 @@ import fs from "fs/promises";
 import path from "path";
 
 const app = express();
-
-// Porta fornecida pelo Railway
 const PORT = process.env.PORT || 3000;
 
-// Caminho absoluto para filmes.json (para garantir que funcione no Railway)
+// Caminho absoluto para filmes.json
 const filmesPath = path.resolve("./filmes.json");
 
 let filmes = [];
@@ -18,34 +16,25 @@ fs.readFile(filmesPath, "utf-8")
   })
   .catch(err => console.error("Erro ao ler filmes.json:", err));
 
-// Rota inicial para evitar Not Found
+// Rota inicial
 app.get("/", (req, res) => {
   res.send("Bem-vindo à API de Filmes! Use /filmes para acessar os dados.");
 });
 
-// Rota para todos os filmes ou filtrando por gênero
+// Rota para todos os filmes
 app.get("/filmes", (req, res) => {
-  const { genero } = req.query;
-  if (genero) {
-    const filtrados = filmes.filter(f => f.genero.toLowerCase() === genero.toLowerCase());
-    res.json(filtrados);
-  } else {
-    res.json(filmes);
-  }
+  res.json(filmes);
 });
 
-// Rota para filme específico por ID
+// Rota por ID
 app.get("/filmes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const filme = filmes.find(f => f.id === id);
-  if (filme) {
-    res.json(filme);
-  } else {
-    res.status(404).json({ erro: "Filme não encontrado" });
-  }
+  if (filme) res.json(filme);
+  else res.status(404).json({ erro: "Filme não encontrado" });
 });
 
-// Rota para buscar filmes por letra inicial do título
+// Rota por letra inicial
 app.get("/filmes/letra/:letra", (req, res) => {
   const letra = req.params.letra.toUpperCase();
   const filtrados = filmes.filter(f => f.titulo.toUpperCase().startsWith(letra));
@@ -56,4 +45,3 @@ app.get("/filmes/letra/:letra", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API de filmes rodando na porta ${PORT}`);
 });
-
