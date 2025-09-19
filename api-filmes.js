@@ -6,13 +6,13 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Habilita CORS para todas as origens (didático para testes/ensino)
+//Habilita CORS para todas as origens (didático para testes/ensino)
 app.use(cors());
 
-// Caminho absoluto para o arquivo filmes.json
+//Caminho absoluto para o arquivo filmes.json
 const filmesPath = path.resolve("./filmes.json");
 
-// Carrega filmes do JSON
+//Carregar filmes do JSON
 let filmes = [];
 fs.readFile(filmesPath, "utf-8")
   .then(data => {
@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
   res.send("Bem-vindo à API de Filmes! Use /filmes para acessar os dados.");
 });
 
-// Rota para todos os filmes ou filtrando por gênero
+//Rota para todos os filmes ou filtrando por gênero
 app.get("/filmes", (req, res) => {
   const { genero } = req.query;
   if (genero) {
@@ -39,7 +39,7 @@ app.get("/filmes", (req, res) => {
   }
 });
 
-// Rota para filme específico por ID
+//Rota para filme específico por ID
 app.get("/filmes/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const filme = filmes.find(f => f.id === id);
@@ -50,7 +50,7 @@ app.get("/filmes/:id", (req, res) => {
   }
 });
 
-// Rota para buscar filmes por letra inicial do título
+//Rota para buscar filmes por letra inicial do título
 app.get("/filmes/letra/:letra", (req, res) => {
   const letra = req.params.letra.toUpperCase();
   const filtrados = filmes.filter(f =>
@@ -59,7 +59,17 @@ app.get("/filmes/letra/:letra", (req, res) => {
   res.json(filtrados);
 });
 
-// Inicia servidor
+//Buscar filmes pelo título (contendo palavra)
+app.get("/filmes/busca", (req, res) => {
+  const { titulo } = req.query;
+  if (!titulo) {
+    return res.status(400).json({ erro: "Informe o parâmetro 'titulo'" });
+  }
+  const filtrados = filmes.filter(f => f.titulo.toLowerCase().includes(titulo.toLowerCase()));
+  res.json(filtrados);
+});
+
+//Inicia servidor
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`API de filmes rodando na porta ${PORT}`);
 });
